@@ -24,6 +24,7 @@ t_philosoph *init_philo(t_all *args)
 	while (j < args->n_phil)
 	{
 		phil->eaters = (pthread_mutex_t*)calloc(args->n_phil, sizeof(pthread_mutex_t));
+		pthread_mutex_init(&phil->eaters[j], NULL);
 		j++;
 	}
 	j = 0;
@@ -41,11 +42,17 @@ t_philosoph *init_philo(t_all *args)
 		// phil[i].right = (phil[i].id + 1) % args->n_phil;
 		// phil[i].left = phil->eaters[(i + args->n_phil - 1) % args->n_phil];
 		// phil[i].right = phil->eaters[(i + 1) % args->n_phil];
-
-		phil[i].l_fork = phil->eaters[i];
-		phil[i].l_fork = phil->eaters[(i + args->n_phil - 1) % args->n_phil];
-		phil[i].r_fork = phil->eaters[i];
-		phil[i].r_fork = phil->eaters[(i + 1) % args->n_phil];
+		if(phil->id % 2 == 0)
+		{
+			phil[i].l_fork = phil->eaters[i];
+			phil[i].r_fork = phil->eaters[(i + 1) % args->n_phil];
+		}
+		else
+		{
+			//phil[i].l_fork = phil->eaters[i];
+			phil[i].r_fork = phil->eaters[(i + 1) % args->n_phil];
+			phil[i].l_fork = phil->eaters[i];
+		}
 		i++;
 	}
 	// phil->left = (args->p_id + args->n_phil - 1) % args->n_phil;

@@ -2,7 +2,7 @@ NAME = philo
 
 INCS =  incs/philo.h
 
-SRCS =	main.c utils.c init.c
+SRCS =	main_copy.c utils.c
 
 OBJS = $(SRCS:.c=.o)
 

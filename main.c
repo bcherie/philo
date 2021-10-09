@@ -45,33 +45,19 @@ void check_death(t_philosoph *new_one)
 
 int ft_eat(t_philosoph *new_one)
 {
-
-
-	// time = new_one->args->t_eat / new_one->args->n_phil;
-
-	if (new_one->id % 2 == 0)
+	if(new_one->args->flag_die == 0)
 	{
-		if(new_one->args->flag_die == 0)
-		{
-			pthread_mutex_lock(&new_one->r_fork);
-			printf("%lu Philosopher #%d takes l_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
-			pthread_mutex_lock(&new_one->l_fork);
-			printf("%lu Philosopher #%d takes r_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
-			printf("%lu Philosopher #%d is eating...\n", check_time() - new_one->args->start, new_one->id + 1);
-		}
-		// usleep(100);
+		pthread_mutex_lock(&new_one->l_fork);
+		pthread_mutex_lock(&new_one->r_fork);
+		printf("%lu Philosopher #%d is eating...\n", check_time() - new_one->args->start, new_one->id + 1);
 	}
-	else
-	{
-		if(new_one->args->flag_die == 0)
-		{
-			pthread_mutex_lock(&new_one->l_fork);
-			printf("%lu Philosopher #%d takes l_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
-			pthread_mutex_lock(&new_one->r_fork);
-			printf("%lu Philosopher #%d takes r_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
-			printf("%lu Philosopher #%d is eating...\n", check_time() - new_one->args->start, new_one->id + 1);
-		}
-	}
+	// if(new_one->args->flag_die == 0)
+	// 	{
+	// 		pthread_mutex_lock(&new_one->l_fork);
+	// 		printf("%lu Philosopher #%d takes l_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
+	// 		pthread_mutex_lock(&new_one->r_fork);
+	// printf("%lu Philosopher #%d takes r_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
+	// printf("%lu Philosopher #%d is eating...\n", check_time() - new_one->args->start, new_one->id + 1);
 	my_usleep(new_one->args->t_eat);
 	new_one->last_eat = check_time();
 
@@ -91,8 +77,13 @@ void ft_sleep(t_philosoph *new_one)
 //work for each phil
 void *tread(void *new_one)
 {
+	t_philosoph *tmp;
+
+	tmp = new_one;
 	while (1)
 	{
+		// if(tmp->id % 2 == 0)
+		// 	my_usleep(100);
 		ft_eat(new_one);
 		// printf("Philosopher #%d is sleeping...\n", tmp->id + 1);
 		// printf("Philosopher #%d is thinking...\n", tmp->id + 1);

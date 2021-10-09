@@ -23,7 +23,7 @@
 typedef struct s_all
 {
 	//get number philosoph
-	int	n_phil;
+	int				n_phil;
 	unsigned int	t_die;
 	unsigned int	t_eat;
 	unsigned int	t_sleep;
@@ -32,13 +32,12 @@ typedef struct s_all
 	int				flag_die;
 
 	// int				state; // state phil
-	int				p_id;
 	// t_philosoph		*new_one;
 }				t_all;
 
 typedef struct s_philosoph
 {
-	unsigned int	id;
+	int	id;
 	pthread_mutex_t	l_fork;
 	pthread_mutex_t	r_fork;
 	pthread_mutex_t *eaters;
@@ -63,5 +62,6 @@ int	ft_isdigit(int c);
 long unsigned	check_time(void);
 void my_usleep(unsigned long t_eat);
 void ft_sleep(t_philosoph *new_one);
+void	*ft_memset(void *dest, int c, size_t n);
 
 #endif
