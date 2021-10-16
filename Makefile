@@ -2,7 +2,7 @@ NAME = philo
 
 INCS =  incs/philo.h
 
-SRCS =	main_copy.c utils.c
+SRCS =	main_copy.c utils.c init.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -23,3 +23,6 @@ fclean:		clean
 			@$(RM) $(NAME)
 
 re:			fclean all
+
+# run: all
+# 			./philo 3 400 400 200

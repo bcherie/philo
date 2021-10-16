@@ -79,7 +79,7 @@ void my_usleep(unsigned long t_eat)
 {
 	unsigned long tmp;
 
-	tmp = t_eat * 1000;
+	tmp = check_time() - t_eat;
 	usleep(tmp);
 }
 
@@ -91,4 +91,16 @@ void	*ft_memset(void *dest, int c, size_t n)
 	while (n-- > 0)
 		*b++ = c;
 	return (dest);
+}
+
+int	ft_strlen(const char *str)
+{
+	size_t i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
 }

@@ -18,7 +18,7 @@ void stop_tread(t_philosoph *new_one, pthread_t *phil_treads)
 		pthread_detach(phil_treads[i]);
 		i++;
 	}
-	// pthread_mutex_destroy(phil_treads[i]);
+	pthread_mutex_destroy(phil_treads[i]);
 }
 
 void check_death(t_philosoph *new_one)
