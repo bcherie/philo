@@ -74,14 +74,23 @@ unsigned long	check_time(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-
-void my_usleep(unsigned long t_eat)
+void my_usleep(t_philosoph *phil)
 {
 	unsigned long tmp;
 
-	tmp = check_time() - t_eat;
+	tmp = check_time() - phil->phil_ar->t_sleep;
 	usleep(tmp);
 }
+
+void	ft_usleep(useconds_t time)
+{
+	unsigned long long	t;
+
+	t = check_time();
+	while (check_time() - t < time)
+		usleep(50);
+}
+
 
 void	*ft_memset(void *dest, int c, size_t n)
 {
@@ -93,14 +102,3 @@ void	*ft_memset(void *dest, int c, size_t n)
 	return (dest);
 }
 
-int	ft_strlen(const char *str)
-{
-	size_t i;
-
-	i = 0;
-	while (str[i] != '\0')
-	{
-		i++;
-	}
-	return (i);
-}

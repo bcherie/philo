@@ -1,125 +1,102 @@
 #include "philosophers.h"
 
 
-void print_status(t_philosoph *new_one, char *print)
-{
-
-	printf("%lu Philo %d %s\n", (check_time() - new_one->args->start), \
-			new_one->id, print);
-}
-
-void stop_tread(t_philosoph *new_one, pthread_t *phil_treads)
+void stop_tread(t_all *args, pthread_t *phil_treads)
 {
 	int i;
 
 	i = 0;
-	while (i < new_one->args->n_phil)
+	while (i < args->n_phil)
 	{
 		pthread_detach(phil_treads[i]);
 		i++;
 	}
-	pthread_mutex_destroy(phil_treads[i]);
+	//pthread_mutex_destroy(new_one->death);
+	pthread_mutex_destroy(args->print);
+	pthread_mutex_destroy(args->forks);
+	free(args->forks);
+	free(phil_treads);
 }
 
-void check_death(t_philosoph *new_one)
+void check_death(t_all *args)
 {
 	unsigned long t;
 	int i;
 
 	i = 0;
-	t = check_time() - new_one->last_eat;
-
-	if(t > new_one[new_one->id].args->t_die)
+	t = 0;
+	while (i < args->n_phil)
 	{
-		new_one->args->flag_die = 1;
-		pthread_mutex_lock(&new_one->death[new_one->id]);
-		printf("%lu Philosopher #%d dies...\n", check_time() - new_one->args->start, new_one->id + 1);
-	}
-	while (i < new_one->args->n_phil)
-	{
-		check_death(new_one);
+		t = check_time() - args->phil[i].last_eat;
+		if(t > args->t_die && args->phil[i].last_eat != args->phil[i].phil_ar->start)
+		{
+			args->flag_die = 1;
+			// if (!new_one->status_die)
+			ft_print_status(&args->phil[i], "dies");
+			//printf("%lu Philosopher #%d dies.\n", check_time() - new_one->args->start, new_one->id + 1);
+			// pthread_mutex_lock(&new_one->death[new_one->id]);
+			// pthread_mutex_lock(args->phil[i].phil_ar->print);
+			// new_one->status_die = &i + 1;
+			// return;
+			break ;
+		}
 		i++;
 	}
-
 }
 
-int ft_eat(t_philosoph *new_one)
-{
-	if(new_one->args->flag_die == 0)
-	{
-		pthread_mutex_lock(&new_one->l_fork);
-		pthread_mutex_lock(&new_one->r_fork);
-		printf("%lu Philosopher #%d is eating...\n", check_time() - new_one->args->start, new_one->id + 1);
-	}
-	// if(new_one->args->flag_die == 0)
-	// 	{
-	// 		pthread_mutex_lock(&new_one->l_fork);
-	// 		printf("%lu Philosopher #%d takes l_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
-	// 		pthread_mutex_lock(&new_one->r_fork);
-	// printf("%lu Philosopher #%d takes r_fork...\n", check_time() - new_one->args->start, new_one->id + 1);
-	// printf("%lu Philosopher #%d is eating...\n", check_time() - new_one->args->start, new_one->id + 1);
-	my_usleep(new_one->args->t_eat);
-	new_one->last_eat = check_time();
-
-	// usleep(time);
-	pthread_mutex_unlock(&new_one->r_fork);
-	pthread_mutex_unlock(&new_one->l_fork);
-	return (2);
-}
-
-void ft_sleep(t_philosoph *new_one)
-{
-
-	while (new_one->args->t_sleep)
-		usleep(new_one->args->t_sleep * 1000);
-}
 
 //work for each phil
-void *tread(void *new_one)
+void *tread(void *phil)
 {
 	t_philosoph *tmp;
 
-	tmp = new_one;
+	tmp = (t_philosoph *) phil;
+	tmp->last_eat = check_time();
 	while (1)
 	{
-		// if(tmp->id % 2 == 0)
-		// 	my_usleep(100);
-		ft_eat(new_one);
-		// printf("Philosopher #%d is sleeping...\n", tmp->id + 1);
-		// printf("Philosopher #%d is thinking...\n", tmp->id + 1);
-		// ft_put_fork(new_one);
-		// new_one->start_eat = tmp->start - check_time();
-		print_status(new_one, "is sleeping");
-		ft_sleep(new_one);
-		print_status(new_one, "is thinking");
-		// usleep(50);
+		ft_print_status(tmp, "thinks");
+		ft_take_fork(tmp);
+		tmp->countEat++;
+		//(args->phil[i].countEat > args->eat_times)
+		// tmp->last_eat = check_time();
+		ft_print_status(tmp, "is sleeping");
+		ft_usleep(tmp->phil_ar->t_sleep);
+		// ft_usleep(tmp->phil_ar->t_sleep);
 	}
 }
 
 
-void ft_check_philos(t_all *args)
+void ft_pthread_create(t_all *args)
 {
-	int num;
-	int result;
-	t_philosoph *new_one;
+	int	num;
+	int	result;
 
-
+	pthread_t *phil_tread;
 	num = 0;
 	result = 0;
-	pthread_t *phil_treads = malloc(sizeof(pthread_t) * args->n_phil);
-	new_one = init_philo(args);
-	if(!phil_treads)
+	phil_tread = malloc(sizeof(pthread_t) * args->n_phil);
+	// args->phil->phil_ar = args;
+	if(!phil_tread)
 		printf("Malloc error\n");
 	while (num < args->n_phil)
 	{
 		args->start = check_time(); //start simulation
-		// printf("секунды:% ld\nnmicro секунд:% d\n", current_time.tv_sec, current_time.tv_usec);
-		result = pthread_create(&phil_treads[num], NULL, tread, &new_one[num]);
-		usleep(100);
-		num++;
+		// args->phil[num].last_eat = args->start;
+		result = pthread_create(&phil_tread[num], NULL, tread, &args->phil[num]);
+		usleep(25);
+		num += 2;
 	}
-	// check_death(new_one);
-	// stop_tread(new_one, phil_treads);
+	num = 1;
+	while (num < args->n_phil)
+	{
+		args->start = check_time(); //start simulation
+		// args->phil[num].last_eat = args->start;
+		result = pthread_create(&phil_tread[num], NULL, tread, &args->phil[num]);
+		usleep(25);
+		num += 2;
+	}
+	if(args->flag_die == 1)
+		stop_tread(args, phil_tread);
 }
 
 int main(int argc, char **argv)
@@ -132,48 +109,21 @@ int main(int argc, char **argv)
 	i = 0;
 	j = 0;
 	digit = 0;
+	// new_one = malloc(sizeof(t_philosoph));
 	args = malloc(sizeof(t_all));
 	ft_init(args);
-	// printf("%d\n", argc);
-	// if(argc != 6 && argc != 5)
-	// 	printf("Error argc\n");
-	// else
-	// {
-	// printf("%s\n", argv[i]);
-	argv[i] = argv[1];
-	while (argv[i])
+	ft_check_args(args, argv);
+	ft_fill_args(args, argc, argv);
+	ft_init_mutex(args);
+	ft_pthread_create(args);
+	while(1)
 	{
-		// printf("%s\n", argv[i]);
-		while (argv[i][j])
-		{
-			if(ft_isdigit(argv[i][j]))
-				digit = 0;
-			else
-				digit = 1;
-			j++;
-		}
-		i++;
-	}
-	if(digit == 0)
-	{
-		if(argc == 5 || argc == 6)
-		{
-			if(argc == 6)
-				args->eat_times = ft_atoi(argv[5]);
-			args->n_phil = ft_atoi(argv[1]);
-			args->t_die = ft_atoi(argv[2]);
-			args->t_eat = ft_atoi(argv[3]);
-			args->t_sleep = ft_atoi(argv[4]);
-			if (args->n_phil < 1 || args->t_die < 1 || args->t_eat < 1 || args->t_sleep < 1)
-				printf("Error: args aren't digits\n");
-		}
+		check_death(args);
+		if (args->flag_die == 1)
+			break ;
 		else
-			printf("error args\n");
+			continue ;
+		usleep(100);
 	}
-	else
-		printf("you put no digit\n");
-	// printf("%s, %s, %s, %s\n", args.n_phil, args.t_die, args.t_eat, args.t_sleep);
-	ft_check_philos(args);
-	//pthread_create(&id, NULL, tread, NULL);
 	return (0);
 }
