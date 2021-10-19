@@ -21,10 +21,6 @@ void ft_init_mutex(t_all *args)
 	i = 0;
 	j = 0;
 	args->phil = (t_philosoph *)calloc(args->n_phil, sizeof(t_philosoph));
-	// args->phil->id = 0;
-	// args->phil->start_eat = 0;
-	// args->phil->last_eat = 0;
-	// args->phil->countEat = 0;
 
 	args->forks = (pthread_mutex_t*)calloc(args->n_phil, sizeof(pthread_mutex_t));
 	while (j < args->n_phil)

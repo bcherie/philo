@@ -41,7 +41,7 @@ void ft_fill_args(t_all *args, int argc, char **argv)
 		{
 			if (argc == 6)
 				args->eat_times = ft_atoi(argv[5]);
-			// printf("%lu\n", args->eat_times);
+			// printf("%d\n", args->eat_times);
 			args->n_phil = ft_atoi(argv[1]); // make atoi
 			args->t_die = ft_atoi(argv[2]);
 			args->t_eat = ft_atoi(argv[3]);

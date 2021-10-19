@@ -102,3 +102,17 @@ void	*ft_memset(void *dest, int c, size_t n)
 	return (dest);
 }
 
+int ft_check_eat(t_all *args)
+{
+	int i;
+
+	i = 0;
+	while (i < args->n_phil)
+	{
+		if(args->phil->countEat > args->eat_times)
+			break ;
+		i++;
+	}
+	return (0);
+}
+

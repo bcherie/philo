@@ -105,6 +105,7 @@ void ft_fill_args(t_all *args, int argc, char **argv);
 void ft_init_mutex(t_all *args);
 void my_useat(t_philosoph *phil);
 void	ft_usleep(useconds_t time);
+int ft_check_eat(t_all *args);
 
 
 
