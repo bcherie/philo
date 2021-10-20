@@ -25,11 +25,11 @@ void check_death(t_all *args)
 
 	i = 0;
 	t = 0;
+
 	while (i < args->n_phil)
 	{
-		//&& args->phil[i].last_eat != args->phil[i].phil_ar->start
 		t = check_time() - args->phil[i].last_eat;
-		if (args->eat_times && args->eat_times == args->phil[i].countEat)
+		if (args->eat_times && args->phil[i].countEat == args->eat_times)
 		{
 			exit(0);
 		}
@@ -43,18 +43,20 @@ void check_death(t_all *args)
 	}
 }
 
-
-//work for each phil
 void *tread(void *phil)
 {
 	t_philosoph *tmp;
 
 	tmp = (t_philosoph *) phil;
 	tmp->last_eat = check_time();
+	// i = tmp->phil_ar->n_phil * tmp->phil_ar->eat_times;
+	// while (i < tmp->phil_ar->n_phil)
 	while (1)
 	{
-		if (tmp->phil_ar->eat_times != 0 && tmp->countEat == tmp->phil_ar->eat_times)
-			break ;
+		// if (tmp->phil_ar->eat_times != 0 && tmp->countEat == tmp->phil_ar->eat_times)
+		// 	break ;
+		// if (tmp->phil_ar->eat_times != 0 && tmp->countEat == i)
+		// 	break ;
 		// printf("e_t %d\n", tmp->phil_ar->eat_times);
 		// printf("c_t %d\n", tmp->countEat);
 		ft_print_status(tmp, "thinks");
@@ -62,8 +64,12 @@ void *tread(void *phil)
 		// 	while (tmp->countEat != tmp->phil_ar->eat_times)
 		ft_take_fork(tmp);
 		// tmp->countEat++;
+		// printf("counea %d\n", tmp->countEat);
 		//t: printf("counea %d\n", tmp->countEat);
+		ft_print_status(tmp, "sleeps");
 		ft_usleep(tmp->phil_ar->t_sleep);
+		tmp->countEat++;
+		printf("counea %d\n", tmp->countEat);
 	}
 	return (NULL);
 }
